@@ -1,10 +1,12 @@
 package ir.developer.todo_compose.ui.theme.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ir.developer.todo_compose.data.models.Priority
 import ir.developer.todo_compose.data.models.ToDoTask
 import ir.developer.todo_compose.data.repository.ToDoRepository
 import ir.developer.todo_compose.util.RequestState
@@ -16,6 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val repository: ToDoRepository) : ViewModel() {
+
+    val id: MutableState<Int> = mutableStateOf(0)
+    val title: MutableState<String> = mutableStateOf("")
+    val description: MutableState<String> = mutableStateOf("")
+    val priority: MutableState<Priority> = mutableStateOf(Priority.LOW)
 
     val searchAppBarState: MutableState<SearchAppBarState> =
         mutableStateOf(SearchAppBarState.CLOSED)
@@ -44,10 +51,23 @@ class SharedViewModel @Inject constructor(private val repository: ToDoRepository
         viewModelScope.launch {
             repository.getSelectedTask(taskId = taskId).collect { task ->
                 _selectedTask.value = task
-
             }
         }
     }
 
-
+    fun updateTaskFields(selectedTask: ToDoTask?) {
+        if (selectedTask != null) {
+            Log.i("taskComposable", "taskComposable: ${selectedTask.id}")
+            id.value = selectedTask.id
+            title.value = selectedTask.title
+            description.value = selectedTask.description
+            priority.value = selectedTask.priority
+        } else {
+            Log.i("taskComposable", "taskComposable: null")
+            id.value = 0
+            title.value = ""
+            description.value = ""
+            priority.value = Priority.LOW
+        }
+    }
 }

@@ -11,7 +11,7 @@ fun NavGraphBuilder.listComposable(
 ) {
     composable(
         route = LIST_SCREEN,
-//        arguments = listOf(navArgument(LIST_ARGUMENT_KEY) {
+//        arguments = listOf(navArgument("action") {
 //            type = NavType.StringType
 //        })
     ) {
