@@ -23,9 +23,17 @@ import ir.developer.todo_compose.util.Action
 
 @Composable
 fun TaskAppBar(
+    selectedTask: ToDoTask?,
     navigationToListScreen: (Action) -> Unit
 ) {
-    NewTaskAppBar(navigationToListScreen = navigationToListScreen)
+    if (selectedTask == null) {
+        NewTaskAppBar(navigationToListScreen = navigationToListScreen)
+    } else {
+        ExistingTaskAppBar(
+            selectedTask = selectedTask,
+            navigationToListScreen = navigationToListScreen
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,6 +1,7 @@
 package ir.developer.todo_compose.ui.theme.screen.list
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import ir.developer.todo_compose.R
@@ -35,12 +37,6 @@ fun ListScreen(
     val searchTextState: String by sharedViewModel.searchTextState
 
     Scaffold(
-        content = {
-            ListContent(
-                tasks = allTask,
-                navigationToTaskScreen = navigateToTaskScreen
-            )
-        },
         topBar = {
             ListAppBar(
                 sharedViewModel = sharedViewModel,
@@ -50,6 +46,13 @@ fun ListScreen(
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
+        },
+        content = {
+            ListContent(
+                modifier = Modifier.padding(top = it.calculateTopPadding()),
+                tasks = allTask,
+                navigationToTaskScreen = navigateToTaskScreen
+            )
         }
     )
 }

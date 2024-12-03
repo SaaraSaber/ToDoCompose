@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import ir.developer.todo_compose.data.models.Priority
 import ir.developer.todo_compose.data.models.ToDoTask
 import ir.developer.todo_compose.ui.theme.LARGE_PADDING
@@ -32,6 +33,7 @@ import ir.developer.todo_compose.util.RequestState
 
 @Composable
 fun ListContent(
+    modifier: Modifier,
     tasks: RequestState<List<ToDoTask>>,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
@@ -40,6 +42,7 @@ fun ListContent(
             EmptyContent()
         } else {
             DisplayTasks(
+                modifier= modifier,
                 tasks = tasks.data,
                 navigationToTaskScreen = navigationToTaskScreen
             )
@@ -51,10 +54,11 @@ fun ListContent(
 
 @Composable
 fun DisplayTasks(
+    modifier: Modifier,
     tasks: List<ToDoTask>,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(
             items = tasks,
             key = { task ->
@@ -95,6 +99,7 @@ fun TaskItem(
                     modifier = Modifier.weight(8f),
                     text = toDoTask.title,
                     color = MaterialTheme.colorScheme.taskItemTextColor,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
