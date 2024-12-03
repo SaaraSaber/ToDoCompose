@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.developer.todo_compose.data.models.Priority
 import ir.developer.todo_compose.data.models.ToDoTask
 import ir.developer.todo_compose.data.repository.ToDoRepository
+import ir.developer.todo_compose.util.Constants.MAX_TITLE_LENGTH
 import ir.developer.todo_compose.util.RequestState
 import ir.developer.todo_compose.util.SearchAppBarState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,6 +69,12 @@ class SharedViewModel @Inject constructor(private val repository: ToDoRepository
             title.value = ""
             description.value = ""
             priority.value = Priority.LOW
+        }
+    }
+
+    fun updateTitle(newTitle: String) {
+        if (newTitle.length < MAX_TITLE_LENGTH) {
+            title.value = newTitle
         }
     }
 }
