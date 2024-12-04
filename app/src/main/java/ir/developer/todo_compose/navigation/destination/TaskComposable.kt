@@ -12,7 +12,6 @@ import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
 import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.Constants
 import ir.developer.todo_compose.util.Constants.TASK_ARGUMENT_KEY
-import kotlinx.coroutines.delay
 
 fun NavGraphBuilder.taskComposable(
     sharedViewModel: SharedViewModel,
@@ -28,8 +27,8 @@ fun NavGraphBuilder.taskComposable(
         sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
-        LaunchedEffect(key1 = taskId) {
-            delay(20L)
+        LaunchedEffect(key1 = selectedTask) {
+//            delay(20L)
             sharedViewModel.updateTaskFields(selectedTask = selectedTask)
         }
         TaskScreen(

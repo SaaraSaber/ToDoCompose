@@ -3,12 +3,15 @@
 package ir.developer.todo_compose.ui.theme.screen.task
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import ir.developer.todo_compose.data.models.Priority
 import ir.developer.todo_compose.data.models.ToDoTask
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
@@ -25,12 +28,24 @@ fun TaskScreen(
     val title: String by sharedViewModel.title
     val description: String by sharedViewModel.description
     val priority: Priority by sharedViewModel.priority
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
             TaskAppBar(
                 selectedTask = selectedTask,
-                navigationToListScreen = navigationToListScreen
+                navigationToListScreen = { action ->
+                    if (action == Action.NO_ACTION) {
+                        navigationToListScreen(action)
+                    } else {
+                        if (sharedViewModel.validateFields()) {
+                            navigationToListScreen(action)
+                        } else {
+                            displayToast(context = context)
+                        }
+                    }
+
+                }
             )
         },
         content = {
@@ -54,4 +69,8 @@ fun TaskScreen(
             )
         }
     )
+}
+
+fun displayToast(context: Context) {
+    Toast.makeText(context, "Fields Empty", Toast.LENGTH_SHORT).show()
 }
