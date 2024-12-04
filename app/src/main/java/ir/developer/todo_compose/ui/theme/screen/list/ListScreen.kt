@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package ir.developer.todo_compose.ui.theme.screen.list
 
 import android.annotation.SuppressLint
@@ -9,17 +11,23 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import ir.developer.todo_compose.R
 import ir.developer.todo_compose.ui.theme.fabBackgroundColor
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
+import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.SearchAppBarState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -37,8 +45,15 @@ fun ListScreen(
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
-    sharedViewModel.handelDatabaseAction(action)
-    
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DisplaySnackBar(
+        snackbarHostState = snackbarHostState,
+        handelDatabaseAction = { sharedViewModel.handelDatabaseAction(action = action) },
+        taskTitle = sharedViewModel.title.value,
+        action = action
+    )
+
     Scaffold(
         topBar = {
             ListAppBar(
@@ -46,6 +61,9 @@ fun ListScreen(
                 searchAppBarState = searchAppBarState,
                 searchTextState = searchTextState
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
@@ -75,5 +93,28 @@ fun ListFab(
             contentDescription = stringResource(id = R.string.add_button),
             tint = Color.White
         )
+    }
+}
+
+@Composable
+fun DisplaySnackBar(
+    snackbarHostState: SnackbarHostState,
+    handelDatabaseAction: () -> Unit,
+    taskTitle: String,
+    action: Action
+) {
+    handelDatabaseAction()
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            scope.launch {
+                val snackBarResult = snackbarHostState.showSnackbar(
+                    message = "${action.name}: $taskTitle",
+                    withDismissAction = true
+                )
+            }
+        }
     }
 }
