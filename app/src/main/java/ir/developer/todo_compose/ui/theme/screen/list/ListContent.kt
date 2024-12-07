@@ -29,26 +29,51 @@ import ir.developer.todo_compose.ui.theme.TASK_ITEM_ELEVATION
 import ir.developer.todo_compose.ui.theme.taskItemBackgroundColor
 import ir.developer.todo_compose.ui.theme.taskItemTextColor
 import ir.developer.todo_compose.util.RequestState
+import ir.developer.todo_compose.util.SearchAppBarState
 
 
 @Composable
 fun ListContent(
     modifier: Modifier,
-    tasks: RequestState<List<ToDoTask>>,
+    allTasks: RequestState<List<ToDoTask>>,
+    searchedTasks: RequestState<List<ToDoTask>>,
+    searchAppBarState: SearchAppBarState,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if (tasks is RequestState.Success) {
-        if (tasks.data.isEmpty()) {
-            EmptyContent()
-        } else {
-            DisplayTasks(
-                modifier= modifier,
-                tasks = tasks.data,
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Success) {
+            HandlerListContent(
+                modifier = modifier,
+                tasks = searchedTasks.data,
+                navigationToTaskScreen = navigationToTaskScreen
+            )
+        }
+    } else {
+        if (allTasks is RequestState.Success) {
+            HandlerListContent(
+                modifier = modifier,
+                tasks = allTasks.data,
                 navigationToTaskScreen = navigationToTaskScreen
             )
         }
     }
+}
 
+@Composable
+fun HandlerListContent(
+    modifier: Modifier,
+    tasks: List<ToDoTask>,
+    navigationToTaskScreen: (taskId: Int) -> Unit
+) {
+    if (tasks.isEmpty()) {
+        EmptyContent()
+    } else {
+        DisplayTasks(
+            modifier = modifier,
+            tasks = tasks,
+            navigationToTaskScreen = navigationToTaskScreen
+        )
+    }
 }
 
 
