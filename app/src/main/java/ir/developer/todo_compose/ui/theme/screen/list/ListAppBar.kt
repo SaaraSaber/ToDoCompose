@@ -236,6 +236,7 @@ fun SearchAppBar(
 
     Surface(
         modifier = Modifier
+            .padding(top = 25.dp)
             .fillMaxWidth()
             .height(TOP_APP_BAR_HEIGHT),
         tonalElevation = 4.dp,
