@@ -43,6 +43,7 @@ import ir.developer.todo_compose.ui.theme.TOP_APP_BAR_HEIGHT
 import ir.developer.todo_compose.ui.theme.topAppBarBackgroundColor
 import ir.developer.todo_compose.ui.theme.topAppBarContentColor
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
+import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.SearchAppBarState
 import ir.developer.todo_compose.util.TrailingIconState
 
@@ -60,7 +61,9 @@ fun ListAppBar(
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
                 onSortClicked = {},
-                onDeleteClick = {}
+                onDeleteAllClicked = {
+                    sharedViewModel.action.value = Action.DELETE_ALL
+                }
             )
         }
 
@@ -87,7 +90,7 @@ fun ListAppBar(
 fun DefaultListAppBar(
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteAllClicked: () -> Unit
 
 ) {
     TopAppBar(
@@ -98,7 +101,7 @@ fun DefaultListAppBar(
             )
         },
         actions = {
-            ListAppBarAction(onSearchClicked, onSortClicked, onDeleteClick)
+            ListAppBarAction(onSearchClicked, onSortClicked, onDeleteAllClicked)
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.topAppBarBackgroundColor
@@ -111,11 +114,11 @@ fun DefaultListAppBar(
 fun ListAppBarAction(
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     SearchAction(onSearchClicked = onSearchClicked)
     SortAction(onSortClicked = onSortClicked)
-    DeleteAllAction(onDeleteClick = onDeleteClick)
+    DeleteAllAction(onDeleteAllClicked = onDeleteAllClicked)
 }
 
 @Composable
@@ -184,7 +187,7 @@ fun SortAction(
 
 
 @Composable
-fun DeleteAllAction(onDeleteClick: () -> Unit) {
+fun DeleteAllAction(onDeleteAllClicked: () -> Unit) {
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -210,7 +213,7 @@ fun DeleteAllAction(onDeleteClick: () -> Unit) {
                 },
                 onClick = {
                     expanded = false
-                    onDeleteClick()
+                    onDeleteAllClicked()
                 }
             )
 
@@ -316,7 +319,7 @@ fun SearchAppBar(
 @Composable
 @Preview
 private fun LstAppBarPreview() {
-    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteClick = {})
+    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteAllClicked = {})
 }
 
 @ExperimentalMaterial3Api
