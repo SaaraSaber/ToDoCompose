@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.developer.todo_compose.data.models.Priority
 import ir.developer.todo_compose.data.models.ToDoTask
+import ir.developer.todo_compose.data.repository.DataStoreRepository
 import ir.developer.todo_compose.data.repository.ToDoRepository
 import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.Constants.MAX_TITLE_LENGTH
@@ -20,7 +21,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(private val repository: ToDoRepository) : ViewModel() {
+class SharedViewModel @Inject constructor
+    (
+    private val repository: ToDoRepository,
+    private val dataStoreRepository: DataStoreRepository
+) : ViewModel() {
 
     val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
 
@@ -114,7 +119,7 @@ class SharedViewModel @Inject constructor(private val repository: ToDoRepository
         }
     }
 
-    private fun deleteAllTasks(){
+    private fun deleteAllTasks() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllTasks()
         }
