@@ -1,5 +1,6 @@
 package ir.developer.todo_compose.navigation.destination
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -11,6 +12,7 @@ import ir.developer.todo_compose.util.Constants.LIST_ARGUMENT_KEY
 import ir.developer.todo_compose.util.Constants.LIST_SCREEN
 import ir.developer.todo_compose.util.toAction
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit, sharedViewModel: SharedViewModel
 ) {
