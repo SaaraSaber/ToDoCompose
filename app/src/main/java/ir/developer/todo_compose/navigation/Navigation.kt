@@ -5,9 +5,10 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import ir.developer.todo_compose.navigation.destination.listComposable
+import ir.developer.todo_compose.navigation.destination.splashComposable
 import ir.developer.todo_compose.navigation.destination.taskComposable
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
-import ir.developer.todo_compose.util.Constants.LIST_SCREEN
+import ir.developer.todo_compose.util.Constants.SPLASH_SCREEN
 
 @Composable
 fun SetupNavigation(
@@ -20,14 +21,17 @@ fun SetupNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = LIST_SCREEN
+        startDestination = SPLASH_SCREEN
     ) {
+        splashComposable(
+            navigateToListScreen = screen.splash
+        )
         listComposable(
-            navigateToTaskScreen = screen.task,
+            navigateToTaskScreen = screen.list,
             sharedViewModel = sharedViewModel
         )
         taskComposable(
-            navigateToListScreen = screen.list,
+            navigateToListScreen = screen.task,
             sharedViewModel = sharedViewModel
         )
     }
