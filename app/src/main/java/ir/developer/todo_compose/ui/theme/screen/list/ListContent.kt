@@ -1,6 +1,5 @@
 package ir.developer.todo_compose.ui.theme.screen.list
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -166,9 +165,11 @@ fun DisplayTasks(
                             }
                         }
 
-                        else -> {
-                            Log.i("DisplayTasks", "DisplayTasks: else")
+                        SwipeToDismissBoxValue.Settled -> {
+                            return@rememberSwipeToDismissBoxState false
                         }
+
+                        else -> {}
                     }
                     return@rememberSwipeToDismissBoxState true
                 },
@@ -212,11 +213,6 @@ fun DisplayTasks(
         }
     }
 }
- @Composable
- private fun s (onSwipeToDelete: (Action, ToDoTask) -> Unit){
-
-
- }
 
 @Composable
 fun RedBackground(

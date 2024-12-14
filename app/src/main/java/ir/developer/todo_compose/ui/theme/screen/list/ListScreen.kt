@@ -11,6 +11,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -131,7 +132,8 @@ fun DisplaySnackBar(
             scope.launch {
                 val snackBarResult = snackbarHostState.showSnackbar(
                     message = setMessage(action = action, taskTitle = taskTitle),
-                    actionLabel = setActionLabel(action = action)
+                    actionLabel = setActionLabel(action = action),
+                    duration = SnackbarDuration.Short
                 )
                 undoDeletedTask(
                     action = action,
