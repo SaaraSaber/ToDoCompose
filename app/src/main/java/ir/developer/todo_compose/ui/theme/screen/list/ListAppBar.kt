@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -238,7 +237,6 @@ fun DeleteAllAction(onDeleteAllConfirmed: () -> Unit) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(
     text: String,
@@ -320,13 +318,13 @@ fun SearchAppBar(
                     onSearchClicked(text)
                 }
             ),
-            colors = TextFieldDefaults.textFieldColors(
-                cursorColor = MaterialTheme.colorScheme.topAppBarContentColor,
-                focusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                containerColor = Color.Transparent
-            )
+//            colors = TextFieldDefaults.textFieldColors(
+//                cursorColor = MaterialTheme.colorScheme.topAppBarContentColor,
+//                focusedIndicatorColor = Color.Transparent,
+//                disabledIndicatorColor = Color.Transparent,
+//                unfocusedIndicatorColor = Color.Transparent,
+//                containerColor = Color.Transparent
+//            )
         )
     }
 }

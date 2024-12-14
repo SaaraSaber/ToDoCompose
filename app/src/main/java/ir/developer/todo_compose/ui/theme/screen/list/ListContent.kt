@@ -1,7 +1,12 @@
 package ir.developer.todo_compose.ui.theme.screen.list
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,12 +19,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -38,8 +51,11 @@ import ir.developer.todo_compose.ui.theme.PRIORITY_INDICATOR_SIZE
 import ir.developer.todo_compose.ui.theme.TASK_ITEM_ELEVATION
 import ir.developer.todo_compose.ui.theme.taskItemBackgroundColor
 import ir.developer.todo_compose.ui.theme.taskItemTextColor
+import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.RequestState
 import ir.developer.todo_compose.util.SearchAppBarState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -51,6 +67,7 @@ fun ListContent(
     highPriorityTasks: List<ToDoTask>,
     sortState: RequestState<Priority>,
     searchAppBarState: SearchAppBarState,
+    onSwipeToDelete: (Action, ToDoTask) -> Unit,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
 
@@ -62,6 +79,7 @@ fun ListContent(
                     HandlerListContent(
                         modifier = modifier,
                         tasks = searchedTasks.data,
+                        onSwipeToDelete = onSwipeToDelete,
                         navigationToTaskScreen = navigationToTaskScreen
                     )
                 }
@@ -72,6 +90,7 @@ fun ListContent(
                     HandlerListContent(
                         modifier = modifier,
                         tasks = allTasks.data,
+                        onSwipeToDelete = onSwipeToDelete,
                         navigationToTaskScreen = navigationToTaskScreen
                     )
                 }
@@ -81,6 +100,7 @@ fun ListContent(
                 HandlerListContent(
                     modifier = modifier,
                     tasks = lowPriorityTasks,
+                    onSwipeToDelete = onSwipeToDelete,
                     navigationToTaskScreen = navigationToTaskScreen
                 )
             }
@@ -89,6 +109,7 @@ fun ListContent(
                 HandlerListContent(
                     modifier = modifier,
                     tasks = highPriorityTasks,
+                    onSwipeToDelete = onSwipeToDelete,
                     navigationToTaskScreen = navigationToTaskScreen
                 )
             }
@@ -102,6 +123,7 @@ fun ListContent(
 fun HandlerListContent(
     modifier: Modifier,
     tasks: List<ToDoTask>,
+    onSwipeToDelete: (Action, ToDoTask) -> Unit,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
     if (tasks.isEmpty()) {
@@ -110,57 +132,96 @@ fun HandlerListContent(
         DisplayTasks(
             modifier = modifier,
             tasks = tasks,
+            onSwipeToDelete = onSwipeToDelete,
             navigationToTaskScreen = navigationToTaskScreen
         )
     }
 }
 
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DisplayTasks(
     modifier: Modifier,
     tasks: List<ToDoTask>,
+    onSwipeToDelete: (Action, ToDoTask) -> Unit,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
+    val scope = rememberCoroutineScope()
+
+    LazyColumn(
+        modifier = modifier
+    ) {
         items(
             items = tasks,
             key = { task ->
                 task.id
             }) { task ->
 
-            TaskItem(toDoTask = task, navigationToTaskScreen = navigationToTaskScreen)
-//            val state = remember {
-//                AnchoredDraggableState(
-//                    // 2
-//                    initialValue = DragAnchors.Start,
-//                    // 3
-//                    positionalThreshold = { distance: Float -> distance * 0.5f },
-//                    // 4
-//                    velocityThreshold = { with(density) { 100.dp.toPx() } },
-//                    // 5
-//                    animationSpec = tween(),
-//                ).apply {
-//                    // 6
-//                    updateAnchors(
-//                        // 7
-//                        DraggableAnchors {
-//                            DragAnchors.Start at 0f
-//                            DragAnchors.End at 400f
-//                        }
-//                    )
-//                }
-//            }
-//
-//
-//            Modifier.anchoredDraggable(state =state)
+            val dismissState = rememberSwipeToDismissBoxState(
+                confirmValueChange = {
+                    when (it) {
+                        SwipeToDismissBoxValue.EndToStart -> {
+                            scope.launch{
+                                delay(timeMillis = 300)
+                                onSwipeToDelete(Action.DELETE, task)
+                            }
+                        }
+
+                        else -> {
+                            Log.i("DisplayTasks", "DisplayTasks: else")
+                        }
+                    }
+                    return@rememberSwipeToDismissBoxState true
+                },
+                positionalThreshold = { it * .30f }
+            )
+
+            val degrees by animateFloatAsState(
+                targetValue =
+                if (dismissState.targetValue == SwipeToDismissBoxValue.EndToStart) -45f else 0f,
+                label = ""
+            )
+            var itemAppeared by remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = true) {
+                itemAppeared = true
+            }
+
+            AnimatedVisibility(
+                visible = itemAppeared,
+                enter = expandVertically(
+                    animationSpec = tween(
+                        durationMillis = 300
+                    )
+                ),
+                exit = shrinkVertically(
+                    animationSpec = tween(
+                        durationMillis = 300
+                    )
+                )
+            ) {
+                SwipeToDismissBox(
+                    state = dismissState,
+                    backgroundContent = { RedBackground(degrees = degrees) },
+                    enableDismissFromStartToEnd = false,
+                    enableDismissFromEndToStart = true,
+                    content = {
+                        TaskItem(toDoTask = task, navigationToTaskScreen = navigationToTaskScreen)
+                    }
+                )
+            }
+
         }
     }
 }
+ @Composable
+ private fun s (onSwipeToDelete: (Action, ToDoTask) -> Unit){
+
+
+ }
 
 @Composable
-fun RedBackground(degrees: Float) {
+fun RedBackground(
+    degrees: Float
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -177,14 +238,11 @@ fun RedBackground(degrees: Float) {
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskItem(
     toDoTask: ToDoTask,
     navigationToTaskScreen: (taskId: Int) -> Unit
 ) {
-
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.taskItemBackgroundColor,
