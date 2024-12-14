@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -60,7 +62,7 @@ fun ListAppBar(
                 onSearchClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
-                onSortClicked = {sharedViewModel.persistSortState(it)},
+                onSortClicked = { sharedViewModel.persistSortState(it) },
                 onDeleteAllConfirmed = {
                     sharedViewModel.action.value = Action.DELETE_ALL
                 }
@@ -318,13 +320,51 @@ fun SearchAppBar(
                     onSearchClicked(text)
                 }
             ),
-//            colors = TextFieldDefaults.textFieldColors(
-//                cursorColor = MaterialTheme.colorScheme.topAppBarContentColor,
-//                focusedIndicatorColor = Color.Transparent,
-//                disabledIndicatorColor = Color.Transparent,
-//                unfocusedIndicatorColor = Color.Transparent,
-//                containerColor = Color.Transparent
-//            )
+            colors = TextFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                disabledTextColor = Color.Black,
+                errorTextColor = Color.Black,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                errorContainerColor = Color.Black,
+                cursorColor = MaterialTheme.colorScheme.topAppBarContentColor,
+                errorCursorColor = Color.Black,
+                textSelectionColors = TextSelectionColors(Color.Black, Color.Black),
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Black,
+                focusedLeadingIconColor = Color.Black,
+                unfocusedLeadingIconColor = Color.Black,
+                disabledLeadingIconColor = Color.Black,
+                errorLeadingIconColor = Color.Black,
+                focusedTrailingIconColor = Color.Black,
+                unfocusedTrailingIconColor = Color.Black,
+                disabledTrailingIconColor = Color.Black,
+                errorTrailingIconColor = Color.Black,
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                errorLabelColor = Color.Black,
+                focusedPlaceholderColor = Color.Black,
+                unfocusedPlaceholderColor = Color.Black,
+                disabledPlaceholderColor = Color.Black,
+                errorPlaceholderColor = Color.Black,
+                focusedSupportingTextColor = Color.Black,
+                unfocusedSupportingTextColor = Color.Black,
+                disabledSupportingTextColor = Color.Black,
+                errorSupportingTextColor = Color.Black,
+                focusedPrefixColor = Color.Black,
+                unfocusedPrefixColor = Color.Black,
+                disabledPrefixColor = Color.Black,
+                errorPrefixColor = Color.Black,
+                focusedSuffixColor = Color.Black,
+                unfocusedSuffixColor = Color.Black,
+                disabledSuffixColor = Color.Black,
+                errorSuffixColor = Color.Black
+            )
         )
     }
 }
