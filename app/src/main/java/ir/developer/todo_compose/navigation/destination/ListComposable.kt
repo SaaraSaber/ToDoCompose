@@ -6,9 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import ir.developer.todo_compose.ui.theme.screen.list.ListScreen
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
 import ir.developer.todo_compose.util.Action
@@ -21,9 +19,9 @@ fun NavGraphBuilder.listComposable(
 ) {
     composable(
         route = LIST_SCREEN,
-        arguments = listOf(navArgument(LIST_ARGUMENT_KEY) {
-            type = NavType.StringType
-        })
+//        arguments = listOf(navArgument(LIST_ARGUMENT_KEY) {
+//            type = NavType.StringType
+//        })
     ) { navBackStackScreen ->
 
         val action = navBackStackScreen.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
