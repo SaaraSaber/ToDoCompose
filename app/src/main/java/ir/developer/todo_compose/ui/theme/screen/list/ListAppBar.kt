@@ -47,7 +47,6 @@ import ir.developer.todo_compose.ui.theme.topAppBarContentColor
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
 import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.SearchAppBarState
-import ir.developer.todo_compose.util.TrailingIconState
 
 @ExperimentalMaterial3Api
 @Composable
@@ -174,29 +173,15 @@ fun SortAction(
             onDismissRequest = { expanded = false }
         ) {
 
-            DropdownMenuItem(
-                text = { PriorityItem(priority = Priority.LOW) },
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.LOW)
-                }
-            )
-
-            DropdownMenuItem(
-                text = { PriorityItem(priority = Priority.HIGH) },
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.HIGH)
-                }
-            )
-
-            DropdownMenuItem(
-                text = { PriorityItem(priority = Priority.NONE) },
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.NONE)
-                }
-            )
+            Priority.values().slice(setOf(0, 2, 3)).forEach { priority ->
+                DropdownMenuItem(
+                    text = { PriorityItem(priority = priority) },
+                    onClick = {
+                        expanded = false
+                        onSortClicked(priority)
+                    }
+                )
+            }
         }
     }
 
@@ -246,9 +231,7 @@ fun SearchAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
-    var trailingIconState by remember {
-        mutableStateOf(TrailingIconState.READY_TO_DELETE)
-    }
+
 
     Surface(
         modifier = Modifier
@@ -289,23 +272,13 @@ fun SearchAppBar(
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        when (trailingIconState) {
-                            TrailingIconState.READY_TO_DELETE -> {
-                                onTextChange("")
-                                trailingIconState = TrailingIconState.READY_TO_CLOSE
-
-                            }
-
-                            TrailingIconState.READY_TO_CLOSE -> {
-                                if (text.isNotEmpty()) {
-                                    onTextChange("")
-                                } else {
-                                    onCloseClicked()
-                                    trailingIconState = TrailingIconState.READY_TO_DELETE
-                                }
-                            }
+                        if (text.isNotEmpty()) {
+                            onTextChange("")
+                        } else {
+                            onCloseClicked()
                         }
-                    }) {
+                    })
+                {
                     Icon(
                         imageVector = Icons.Filled.Close, contentDescription = "Close icon",
                         tint = MaterialTheme.colorScheme.topAppBarContentColor

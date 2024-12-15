@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ir.developer.todo_compose.R
 import ir.developer.todo_compose.ui.theme.splashScreenBackground
@@ -56,6 +57,11 @@ fun SplashScreen(
         navigateToListScreen()
     }
 
+    splash(offsetState, alphaState)
+}
+
+@Composable
+fun splash(offsetState: Dp, alphaState: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +77,6 @@ fun SplashScreen(
             contentDescription = "logo splash"
         )
     }
-
 }
 
 @Composable
@@ -86,5 +91,5 @@ fun getLogo(): Int {
 @Composable
 @Preview
 fun SplashScreenPreview() {
-    SplashScreen({})
+    splash(offsetState = 0.dp, alphaState = 1f)
 }
