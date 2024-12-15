@@ -1,6 +1,6 @@
 [versions]
 agp = "8.2.0-alpha12"
-kotlin = "1.8.10"
+kotlin = "1.9.10"
 core-ktx = "1.9.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.2.1"
@@ -35,7 +35,7 @@ datastore = { group = "androidx.datastore", name = "datastore-preferences", vers
 #dagger hilt
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "daggerHilt" }
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "daggerHilt" }
-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCompiler" }
+#hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCompiler" }
 
 
 [plugins]

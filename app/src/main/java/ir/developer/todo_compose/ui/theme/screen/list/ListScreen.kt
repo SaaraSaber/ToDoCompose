@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -29,7 +28,6 @@ import ir.developer.todo_compose.ui.theme.fabBackgroundColor
 import ir.developer.todo_compose.ui.theme.viewmodel.SharedViewModel
 import ir.developer.todo_compose.util.Action
 import ir.developer.todo_compose.util.SearchAppBarState
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -124,23 +122,19 @@ fun DisplaySnackBar(
     taskTitle: String,
     action: Action
 ) {
-    val scope = rememberCoroutineScope()
-
     LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION) {
-            scope.launch {
-                val snackBarResult = snackbarHostState.showSnackbar(
-                    message = setMessage(action = action, taskTitle = taskTitle),
-                    actionLabel = setActionLabel(action = action),
-                    duration = SnackbarDuration.Short
-                )
-                undoDeletedTask(
-                    action = action,
-                    snackbarResult = snackBarResult,
-                    onUndoClicked = onUndoClicked
-                )
+
+            val snackBarResult = snackbarHostState.showSnackbar(
+                message = setMessage(action = action, taskTitle = taskTitle),
+                actionLabel = setActionLabel(action = action),
+                duration = SnackbarDuration.Short
+            )
+            if (snackBarResult == SnackbarResult.ActionPerformed && action == Action.DELETE) {
+                onUndoClicked(Action.UNDO)
+            } else if (snackBarResult == SnackbarResult.Dismissed || action != Action.DELETE) {
+                onComplete(Action.NO_ACTION)
             }
-            onComplete(Action.NO_ACTION)
         }
     }
 }
@@ -157,15 +151,5 @@ private fun setActionLabel(action: Action): String {
         "UNDO"
     } else {
         "OK"
-    }
-}
-
-private fun undoDeletedTask(
-    action: Action,
-    snackbarResult: SnackbarResult,
-    onUndoClicked: (Action) -> Unit
-) {
-    if (snackbarResult == SnackbarResult.ActionPerformed && action == Action.DELETE) {
-        onUndoClicked(Action.UNDO)
     }
 }
